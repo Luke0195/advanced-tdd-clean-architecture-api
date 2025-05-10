@@ -17,6 +17,8 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@types/jest": "^29.5.14",
     "@types/module-alias": "^2.0.4",
     "@types/node": "^22.15.17",
