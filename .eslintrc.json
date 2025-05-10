@@ -1,0 +1,12 @@
+{
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "extends": "standard-with-typescript",
+      "parserOptions": {
+        "project": "./tsconfig.json",  // caminho correto
+        "tsconfigRootDir": "."         // raiz do projeto
+      }
+    }
+  ]
+}
