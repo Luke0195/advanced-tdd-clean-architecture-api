@@ -9,8 +9,6 @@ describe('FacebookAuthenticationService', () => {
   let sut:FacebookAuthenticationService;
   let userAccountRepository: MockProxy<CreateFacebookAccountRepository & LoadUserAccountRepository>
   let facebookApi: MockProxy<LoadFacebookUserApi>;
-
-
   const token = 'any_token'
 
   beforeEach(() => {
