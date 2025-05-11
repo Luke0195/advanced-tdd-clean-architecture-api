@@ -4,29 +4,32 @@ import tseslint from "typescript-eslint";
 import { defineConfig } from "eslint/config";
 
 export default defineConfig([
-  // Ignorar pastas
   {
-    ignores: ["node_modules", "dist", "coverage"]
+    ignores: ["node_modules", "dist", "coverage"],
   },
 
-  // Regras básicas JS
   {
     files: ["**/*.{js,mjs,cjs,ts}"],
     plugins: { js },
-    extends: ["js/recommended"]
+    extends: ["js/recommended"],
   },
 
-  // Configuração Node.js e desativação da regra
   {
     files: ["**/*.{js,mjs,cjs,ts}"],
     languageOptions: {
-      globals: globals.node
+      globals: globals.node,
     },
     rules: {
-      "@typescript-eslint/no-require-imports": "off"
-    }
+      "@typescript-eslint/no-require-imports": "off",
+    },
   },
 
-  // Regras recomendadas do typescript-eslint
-  ...tseslint.configs.recommended
+  {
+    files: ["**/*.ts"],
+    ...tseslint.configs.recommended,
+    rules: {
+      ...tseslint.configs.recommended.rules,
+      "@typescript-eslint/no-namespace": "off",
+    },
+  },
 ]);

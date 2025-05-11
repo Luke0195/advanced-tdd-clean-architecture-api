@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 
 import { AccessToken } from '@/domain/models'
 import { AuthenticatioError } from '@/domain/errors'
@@ -5,6 +6,7 @@ import { AuthenticatioError } from '@/domain/errors'
 export interface FacebookAuthentication{
   perform: (token:FacebookAuthentication.Params) => Promise<FacebookAuthentication.Result>;
 }
+
 
 export namespace FacebookAuthentication{
   export  type Params = {
