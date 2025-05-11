@@ -1,29 +1,40 @@
 import { FacebookAuthenticationService } from '@/data/services'
-import { LoadFacebookUserApi, } from '@/data/contracts/api'
+import { LoadFacebookUserApi } from '@/data/contracts/api'
 import { AuthenticatioError } from "@/domain/errors";
-import { mock } from 'jest-mock-extended';
+import { mock, MockProxy } from 'jest-mock-extended'
 
+type SutTypes = {
+  sut: FacebookAuthenticationService;
+  loadFacebookUserApi: MockProxy<LoadFacebookUserApi>;
+}
+
+
+const makeSut = ():SutTypes =>{
+  const loadFacebookUserApi =  mock<LoadFacebookUserApi>();
+  const sut = new FacebookAuthenticationService(loadFacebookUserApi)
+  return {
+    sut,
+    loadFacebookUserApi,
+  }
+}
 
 describe('FacebookAuthenticationService', () => {
   test('Should calls loadUserFacebookApi with correct params', async () => {
-    const loadFacebookUserApi =  mock<LoadFacebookUserApi>();
-    const sut = new FacebookAuthenticationService(loadFacebookUserApi)
+    const { sut, loadFacebookUserApi } = makeSut()
     await sut.perform({ token: 'any_token'})
     expect(loadFacebookUserApi.loadUser).toHaveBeenCalledWith({ token: 'any_token'})
     expect(loadFacebookUserApi.loadUser).toHaveBeenCalledTimes(1);
   });
 
     test('Should calll loadUserFacebookApi only once', async() => {
-      const loadUserFacebookApi = mock<LoadFacebookUserApi>();
-      const sut = new FacebookAuthenticationService(loadUserFacebookApi);
+      const { sut, loadFacebookUserApi } = makeSut()
       await sut.perform({token: 'any_token'});
-      expect(loadUserFacebookApi.loadUser).toHaveBeenCalledWith({ token: 'any_token'});
-      expect(loadUserFacebookApi.loadUser).toHaveBeenCalledTimes(1);
+      expect(loadFacebookUserApi.loadUser).toHaveBeenCalledWith({ token: 'any_token'});
+      expect(loadFacebookUserApi.loadUser).toHaveBeenCalledTimes(1);
   });
 
   test('Should returns AuthenticationError when loadUserFacebookApi returns undefined', async() => {
-      const loadFacebookUserApi =mock<LoadFacebookUserApi>();
-      const sut = new FacebookAuthenticationService(loadFacebookUserApi)
+      const { sut } = makeSut();
       const authResult = await sut.perform({ token: 'any_token'});
       expect(authResult).toEqual(new AuthenticatioError());
   })
