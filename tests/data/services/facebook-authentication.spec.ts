@@ -1,48 +1,46 @@
-import { AuthenticatioError } from "@/domain/errors";
 import { FacebookAuthentication } from "@/domain/features";
-import { AccessToken } from "@/domain/models";
 
-class FacebookAuthenticationService implements FacebookAuthentication {
+class FacebookAuthenticationService {
 
   constructor(private readonly loadFacebookUserApi:LoadFacebookUserApi){
     this.loadFacebookUserApi = loadFacebookUserApi;
   }
-
-  async perform(params: FacebookAuthentication.Params): Promise<AccessToken | AuthenticatioError>{
-    await this.loadFacebookUserApi.loadUser(params)
-    return new AuthenticatioError();
+  async perform(params:FacebookAuthentication.Params): Promise<void>{
+    this.loadFacebookUserApi.loadUserByToken(params);
   }
-
-
 }
+
+
+
 
 interface LoadFacebookUserApi{
-   loadUser(params:LoadFacebookUserByTokenApi.Params):Promise<void>;
+  loadUserByToken(token: LoadFacebookUserApi.Params):Promise<void>
 }
 
-namespace LoadFacebookUserByTokenApi{
-  export type Params ={
-    token: string
+export namespace LoadFacebookUserApi{
+  export type Params = {
+    token: string;
   }
 }
 
-class LoadFacebookUserApiSpy implements LoadFacebookUserApi{
+
+class LoadFacebookUserByTokenApiSpy implements LoadFacebookUserApi{
+
   token?:string
-
-  async loadUser(params: LoadFacebookUserByTokenApi.Params): Promise<void> {
+  async loadUserByToken(params: LoadFacebookUserApi.Params): Promise<void> {
+    await new Promise((resolve) => resolve({}));
     this.token = params.token;
-    await new Promise((resolve) => resolve(console.log('teste')))
+
   }
 
-
-
 }
+
 
 describe('FacebookAuthenticationService', () => {
-  test('Should calls loadFacebookUserApi with correct value', async () => {
-    const loadFacebookUserByTokenApi = new LoadFacebookUserApiSpy();
-    const sut = new FacebookAuthenticationService(loadFacebookUserByTokenApi);
+  test('Should calls loadUserFacebookApi with correct params', async () => {
+    const loadFacebookUserByTokenApi = new LoadFacebookUserByTokenApiSpy();
+    const sut = new FacebookAuthenticationService(loadFacebookUserByTokenApi)
     await sut.perform({ token: 'any_token'})
-    expect(loadFacebookUserByTokenApi.token).toEqual('any_token');
-  })
-})
+    expect(loadFacebookUserByTokenApi.token).toBe('any_token')
+  });
+});
